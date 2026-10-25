@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.core.database import SessionLocal
+from app.core.security import get_password_hash
 from app.models.user import User, UserRole
 from app.models.dataset import (
     Dataset,
@@ -39,22 +40,24 @@ def seed_database():
         db.query(User).delete()
         db.commit()
 
-        # 2. Seed Users
+        # 2. Seed Users with secure hashed passwords
         super_admin = User(
             email="superadmin@climatedata.org",
             full_name="Sarah Connor (Super Admin)",
             role=UserRole.SUPER_ADMIN,
+            hashed_password=get_password_hash("SuperAdminPass123!"),
             is_active=True,
         )
         admin = User(
             email="admin@climatedata.org",
             full_name="Alex Rivera (Data Admin)",
             role=UserRole.ADMIN,
+            hashed_password=get_password_hash("AdminPass123!"),
             is_active=True,
         )
         db.add_all([super_admin, admin])
         db.flush()  # Populates user IDs without ending the transaction
-        print(f"✅ Created users: {super_admin.email}, {admin.email}")
+        print(f"✅ Created users with hashed passwords: {super_admin.email}, {admin.email}")
 
         now = datetime.utcnow()
 

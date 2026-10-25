@@ -17,6 +17,13 @@ class UserBrief(BaseModel):
 
 
 # Record schemas
+class DatasetRecordCreate(BaseModel):
+    label: str
+    value: float
+    metadata_payload: Optional[dict[str, Any]] = None
+    sort_order: int = 0
+
+
 class DatasetRecordOut(BaseModel):
     id: int
     label: str
@@ -28,6 +35,11 @@ class DatasetRecordOut(BaseModel):
 
 
 # Review schemas
+class DatasetReviewCreate(BaseModel):
+    action: ReviewAction
+    comments: Optional[str] = None
+
+
 class DatasetReviewOut(BaseModel):
     id: int
     action: ReviewAction
@@ -36,6 +48,16 @@ class DatasetReviewOut(BaseModel):
     reviewer: Optional[UserBrief] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# Dataset creation & update schemas
+class DatasetCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    domain: DatasetDomain
+    chart_type: ChartType
+    publication_order: int = 0
+    records: List[DatasetRecordCreate] = []
 
 
 # Dataset schemas
